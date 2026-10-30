@@ -1,0 +1,6 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:gravity="center" android:background="@drawable/widget_bg" android:padding="12dp">
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2h 14m" android:textColor="#C5979D" android:textSize="22sp" android:textStyle="bold" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="New boots" android:textColor="#F4EEF3" android:textSize="13sp" android:textStyle="bold" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cooling off" android:textColor="#B9B2C9" android:textSize="11sp" />
+</LinearLayout>

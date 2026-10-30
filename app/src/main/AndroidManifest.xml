@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <application android:label="Worth the Hours" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher"
+        android:theme="@style/AppTheme" android:allowBackup="true">
+        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize|keyboardHidden" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".JarConfigActivity" android:exported="true" android:theme="@style/AppTheme"
+            android:excludeFromRecents="true" android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".CoolWidget" android:exported="true" android:label="Cooling off">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/cool_widget_info" />
+        </receiver>
+        <receiver android:name=".JarWidget" android:exported="true" android:label="Jar item">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/jar_widget_info" />
+        </receiver>
+        <receiver android:name=".AlarmReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

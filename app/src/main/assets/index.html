@@ -1,0 +1,568 @@
+<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#2B193D"><style>@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:400;src:url(fonts/figtree-latin-400-normal.woff2) format("woff2")}@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:500;src:url(fonts/figtree-latin-500-normal.woff2) format("woff2")}@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:600;src:url(fonts/figtree-latin-600-normal.woff2) format("woff2")}@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:700;src:url(fonts/figtree-latin-700-normal.woff2) format("woff2")}@font-face{font-family:"Figtree";font-style:normal;font-display:swap;font-weight:800;src:url(fonts/figtree-latin-800-normal.woff2) format("woff2")}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Worth the Hours</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one sleek dark column on a midnight-violet ground; indigo glass panels; rosy taupe for the hours, dark cyan for money kept. */
+:root{
+  --violet:#2B193D; --indigo:#2C365E; --grape:#484D6D; --cyan:#4B8F8C; --rose:#C5979D;
+  --bg:#2B193D; --surface:rgba(44,54,94,.55); --surface-solid:#2C365E; --sunk:rgba(20,12,32,.45);
+  --ink:#F4EEF3; --muted:#B9B2C9; --line:rgba(197,151,157,.16); --line-strong:#484D6D;
+  --accent:#C5979D; --accent-ink:#2B193D; --good:#4B8F8C; --good-ink:#F4FBFA; --good-soft:rgba(75,143,140,.18);
+  --ready:#C5979D; --ready-soft:rgba(197,151,157,.16); --bad:#E2A3AA;
+  --f-display:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-num:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius:20px; color-scheme:dark;
+}
+html{background:var(--bg)}
+body{background:var(--bg);background-image:radial-gradient(120% 60% at 100% 0%,rgba(44,54,94,.95) 0%,rgba(43,25,61,0) 60%),radial-gradient(90% 50% at 0% 100%,rgba(75,143,140,.18) 0%,rgba(43,25,61,0) 60%);background-attachment:fixed;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:540px;margin:0 auto;padding-block:28px 56px;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:2.1rem;font-weight:800;line-height:1.05;letter-spacing:-.03em}
+h2{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+.eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+header .eyebrow{color:var(--rose)}
+.rate-chip{border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--muted);border-radius:999px;padding:8px 14px;font:600 .82rem var(--f-body);cursor:pointer;display:flex;gap:8px;align-items:center;transition:border-color .2s}
+.rate-chip:hover{border-color:var(--rose)}
+.rate-chip b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.section{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--surface);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:16px;box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
+label{font-size:.8rem;font-weight:600;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:0}
+input,select{font:500 1rem var(--f-body);color:var(--ink);background:var(--sunk);border:1px solid var(--line-strong);border-radius:12px;padding:12px 13px;width:100%;box-sizing:border-box;min-width:0;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}
+select option{background:var(--surface-solid);color:var(--ink)}
+input::placeholder{color:rgba(185,178,201,.5)}
+input:focus,select:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px rgba(197,151,157,.22)}
+button:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px}
+@media (max-width:420px){.row3{grid-template-columns:1fr 1fr}.row3 > :first-child{grid-column:1/-1}}
+.prefix{position:relative}.prefix span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600;pointer-events:none}.prefix input{padding-left:27px}
+.hint{font-size:.8rem;color:var(--muted);margin:0;line-height:1.55}
+.example-note{background:var(--ready-soft);border:1px solid rgba(197,151,157,.3);color:var(--ink);border-radius:12px;padding:10px 13px;font-size:.84rem}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--sunk);border-radius:14px;padding:4px;gap:4px;border:1px solid var(--line)}
+.seg button{font:600 .88rem var(--f-body);border:0;border-radius:10px;padding:10px 6px;background:transparent;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+.seg button[aria-checked="true"]{background:var(--grape);color:var(--ink);box-shadow:0 4px 12px -6px rgba(0,0,0,.6)}
+label.check{flex-direction:row;align-items:center;gap:10px;font-weight:500;color:var(--ink);font-size:.9rem}
+label.check input{width:20px;height:20px;flex:none;accent-color:var(--rose);-webkit-appearance:auto;appearance:auto;padding:0}
+.breakdown{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.86rem;background:var(--sunk);border-radius:14px;padding:12px 14px}
+.breakdown span:nth-child(even){font-variant-numeric:tabular-nums;text-align:right;font-weight:600}
+.breakdown .tot{font-weight:700;color:var(--ink);border-top:1px solid var(--line-strong);padding-top:8px;margin-top:2px}
+.breakdown span.tot:nth-child(even){color:var(--good-ink)}
+.breakdown .neg{color:var(--muted)}
+
+/* The stamp: the one bold element */
+.stamp{border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:6px;background:linear-gradient(140deg,rgba(72,77,109,.9) 0%,rgba(44,54,94,.9) 100%);border:1px solid rgba(197,151,157,.22);position:relative;overflow:hidden}
+.stamp::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(197,151,157,.28),rgba(197,151,157,0) 70%);pointer-events:none}
+.stamp .big{font-weight:800;font-size:clamp(2.8rem,12vw,3.8rem);line-height:1;color:var(--rose);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.stamp .big small{font-size:.38em;font-weight:600;color:var(--ink);letter-spacing:0;margin-left:3px;margin-right:10px;opacity:.85}
+.stamp .sub{color:var(--muted);font-size:.9rem}
+.stamp .sub strong{color:var(--ink);font-weight:700}
+
+.btn{font:700 .95rem var(--f-body);border-radius:14px;padding:13px 16px;border:1px solid transparent;cursor:pointer;transition:transform .12s,filter .2s,background .2s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--rose);color:var(--accent-ink);box-shadow:0 10px 24px -12px rgba(197,151,157,.8)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;border-color:var(--line-strong);color:var(--ink)}
+.btn.ghost:hover{background:rgba(72,77,109,.35)}
+.btn.good{background:var(--cyan);color:var(--good-ink)}
+.btn.good:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.timers{display:flex;flex-wrap:wrap;gap:8px}
+.timers button{flex:1 1 auto;font:600 .86rem var(--f-body);padding:9px 12px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s}
+.timers button:hover{color:var(--ink)}
+.timers button[aria-pressed="true"]{background:var(--grape);color:var(--ink);border-color:var(--rose)}
+
+.list{display:flex;flex-direction:column;gap:12px}
+.item{background:var(--surface);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.item.ready{border-color:rgba(197,151,157,.7);box-shadow:0 0 0 1px rgba(197,151,157,.35),0 16px 36px -20px rgba(197,151,157,.55)}
+.item-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.item-name{font-weight:700;font-size:1.02rem;min-width:0;overflow-wrap:anywhere}
+.item-price{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.item-meta{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+.pill{font:700 .76rem var(--f-body);font-variant-numeric:tabular-nums;padding:5px 10px;border-radius:999px;background:var(--sunk);color:var(--ink);white-space:nowrap}
+.pill.ready{background:var(--rose);color:var(--accent-ink)}
+.bar{height:6px;border-radius:6px;background:var(--sunk);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--grape),var(--rose));border-radius:6px;transition:width 1s linear}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions .btn{flex:1 1 90px;padding:10px 10px;font-size:.86rem;border-radius:12px}
+.ask{font-weight:700;font-size:1.05rem;color:var(--rose)}
+.empty{border:1px dashed var(--line-strong);border-radius:var(--radius);padding:20px;color:var(--muted);font-size:.9rem;text-align:left;background:rgba(20,12,32,.25)}
+
+.jar-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:420px){.jar-stats{grid-template-columns:1fr 1fr}.jar-stats > :first-child{grid-column:1/-1}}
+.stat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .v{font-weight:700;font-size:1.35rem;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat.hero .v{font-size:2.3rem;font-weight:800;color:#7FC4C0;letter-spacing:-.03em}
+.weeks{display:flex;flex-direction:column;gap:9px}
+.week{display:grid;grid-template-columns:5.2rem 1fr auto;gap:12px;align-items:center;font-size:.85rem;color:var(--muted)}
+.week .track{height:8px;border-radius:8px;background:var(--sunk);overflow:hidden}.week .track i{display:block;height:100%;background:var(--cyan);border-radius:8px}
+.week .amt{font-weight:700;text-align:right;min-width:4.5rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.moved{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;background:var(--good-soft);border:1px solid rgba(75,143,140,.35);border-radius:14px;padding:11px 14px;font-size:.88rem}
+.history .h{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;padding:10px 0;border-top:1px solid var(--line)}
+.history .h:first-child{border-top:0}
+.tag{font-weight:700;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.tag.stash{color:#7FC4C0}.tag.toss{color:var(--muted)}.tag.buy{color:var(--bad)}
+details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px}
+details summary{cursor:pointer;font-weight:600;color:var(--muted);font-size:.88rem}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--rose);color:var(--accent-ink);padding:11px 18px;border-radius:999px;font-weight:700;font-size:.88rem;z-index:20;max-width:calc(100% - 36px);box-shadow:0 14px 30px -12px rgba(0,0,0,.6)}
+.linkish{background:none;border:0;color:var(--muted);font:600 .82rem var(--f-body);text-decoration:underline;cursor:pointer;padding:0}
+.stash-pick{display:flex;flex-direction:column;gap:12px;background:var(--good-soft);border:1px solid rgba(75,143,140,.4);border-radius:16px;padding:14px}
+.stash-pick .ask{color:var(--ink)}
+.stash-pick .timers button[aria-pressed="true"]{background:rgba(75,143,140,.45);border-color:var(--cyan);color:var(--ink)}
+label.inline{flex-direction:row;align-items:center;gap:10px;font-weight:500}
+label.inline input{width:5.5rem;padding:8px 10px}
+.per{display:flex;flex-direction:column;gap:2px}
+.per-amt{font-size:2rem;font-weight:800;color:#7FC4C0;letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums}
+.per-txt{font-size:.86rem;color:var(--muted)}
+.week.future{opacity:.6}.week.future .track i{background:var(--grape)}
+.week.now span:first-child{color:var(--ink);font-weight:700}
+.plans{display:flex;flex-direction:column;gap:10px}.plans:empty{display:none}
+.plan{background:var(--sunk);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.plan-top{display:flex;justify-content:space-between;gap:10px;font-weight:700}.plan-name{min-width:0;overflow-wrap:anywhere}
+.plan-per{color:#7FC4C0;white-space:nowrap;font-variant-numeric:tabular-nums}
+.plan .bar i{background:linear-gradient(90deg,var(--grape),var(--cyan))}
+.plan-meta{font-size:.8rem;color:var(--muted)}
+.jcard{background:var(--sunk);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border-color .2s,background .2s}
+.jcard.open{border-color:rgba(75,143,140,.55);background:rgba(20,12,32,.55)}
+.jcard.done{opacity:.72}
+.jhead{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-columns:1fr auto 18px;grid-template-areas:"name per chev" "status status chev";gap:2px 10px;padding:13px 14px 10px;align-items:center}
+.jhead:focus-visible{outline:2px solid var(--rose);outline-offset:-2px;border-radius:16px}
+.jname{grid-area:name;font-weight:700;min-width:0;overflow-wrap:anywhere;color:var(--ink)}
+.jper{grid-area:per;font-weight:800;color:#7FC4C0;font-variant-numeric:tabular-nums;white-space:nowrap}
+.jper small{font-weight:600;font-size:.72em;color:var(--muted);margin-left:2px}
+.jstatus{grid-area:status;font-size:.78rem;color:var(--muted)}
+.chev{grid-area:chev;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);justify-self:center;transition:transform .2s}
+.jcard.open .chev{transform:rotate(-135deg) translateY(-2px)}
+.jcard > .bar{margin:0 14px 12px;height:4px}
+.jcard > .bar i{background:linear-gradient(90deg,var(--grape),var(--cyan))}
+.jbody{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
+.jfacts{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:0;font-size:.86rem;border-top:1px solid var(--line);padding-top:12px}
+.jfacts dt{color:var(--muted)}.jfacts dd{margin:0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.jconfirm{display:flex;flex-direction:column;gap:10px;background:rgba(197,151,157,.12);border:1px solid rgba(197,151,157,.35);border-radius:12px;padding:12px}
+.jconfirm p{margin:0;font-size:.88rem}
+.btn.danger{background:var(--rose);color:var(--accent-ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Pause before you pay</div>
+      <h1>Worth the Hours?</h1>
+    </div>
+    <button class="rate-chip" id="rateChip" type="button">Your time <b id="rateChipVal">$0/hr</b></button>
+  </header>
+
+  <!-- PAY -->
+  <section class="section" id="paySection">
+    <div class="panel">
+      <div class="eyebrow">Your pay</div>
+      <div class="example-note" id="exampleNote">These are example numbers. Put in your own pay so the hours are real.</div>
+      <div class="seg" role="radiogroup" aria-label="Which pay figure">
+        <button type="button" id="modeGross" role="radio">Salary before tax</button>
+        <button type="button" id="modeNet" role="radio">Take-home pay</button>
+      </div>
+      <div class="row3">
+        <label for="payAmt"><span id="payLabel">Salary before tax</span>
+          <span class="prefix"><span>$</span><input id="payAmt" type="number" inputmode="decimal" min="0" step="any"></span>
+        </label>
+        <label for="payPer">Per
+          <select id="payPer">
+            <option value="year">year</option><option value="month">month</option>
+            <option value="fortnight">fortnight</option><option value="week">week</option><option value="hour">hour</option>
+          </select>
+        </label>
+        <label for="hrs">Hours / week
+          <input id="hrs" type="number" inputmode="decimal" min="1" max="100" step="any">
+        </label>
+      </div>
+      <label class="check" id="superWrap" for="superIncl"><input id="superIncl" type="checkbox"> My salary figure includes super (a "package")</label>
+      <div class="breakdown" id="breakdown"></div>
+      <p class="hint" id="payHint"></p>
+      <button class="btn primary" id="savePay" type="button">Save my pay</button>
+    </div>
+  </section>
+
+  <!-- CHECK -->
+  <section class="section">
+    <h2>Tempted by something?</h2>
+    <div class="panel">
+      <div class="row">
+        <label for="itemName">What is it?
+          <input id="itemName" type="text" placeholder="e.g. new boots" maxlength="60" autocomplete="off">
+        </label>
+        <label for="itemPrice">Price
+          <span class="prefix"><span>$</span><input id="itemPrice" type="number" inputmode="decimal" min="0" step="any" placeholder="0.00"></span>
+        </label>
+      </div>
+      <div class="stamp" aria-live="polite">
+        <div class="eyebrow">That costs you</div>
+        <div class="big" id="stampBig">0<small>hrs</small></div>
+        <div class="sub" id="stampSub">of work</div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">Pause for</div>
+        <div class="timers" id="timerChoices">
+          <button type="button" data-min="10">10 min</button>
+          <button type="button" data-min="60">1 hour</button>
+          <button type="button" data-min="1440" aria-pressed="true">24 hours</button>
+          <button type="button" data-min="4320">3 days</button>
+          <button type="button" data-min="10080">1 week</button>
+        </div>
+      </div>
+      <button class="btn primary" id="startTimer" type="button">Start the pause</button>
+    </div>
+  </section>
+
+  <!-- COOLING -->
+  <section class="section">
+    <h2>Cooling off</h2>
+    <div class="list" id="coolList"></div>
+  </section>
+
+  <!-- JAR -->
+  <section class="section">
+    <h2>The jar</h2>
+    <div class="panel">
+      <div class="jar-stats">
+        <div class="stat hero"><span class="eyebrow">Put away this week</span><span class="v" id="jarWeek">$0</span></div>
+        <div class="stat"><span class="eyebrow">Saved so far</span><span class="v" id="jarAll">$0</span></div>
+        <div class="stat"><span class="eyebrow">Hours kept</span><span class="v" id="jarHrs">0h</span></div>
+      </div>
+      <div class="moved" id="movedBox"></div>
+      <div class="weeks" id="weeks"></div>
+      <div class="plans" id="plans"></div>
+      <p class="hint" id="tossNote"></p>
+    </div>
+    <details>
+      <summary>Decision history</summary>
+      <div class="history" id="history" style="margin-top:8px"></div>
+    </details>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+  const DEFAULT = {settings:{pay:80000, per:"year", hours:38, mode:"gross", superIncl:false, isExample:true}, items:[], moved:{}};
+  const SG = 0.12; // superannuation guarantee rate
+
+  // 2026–27 Australian resident tax (Victoria has no state income tax)
+  function incomeTax(x){
+    if(x<=18200) return 0;
+    if(x<=45000) return (x-18200)*0.15;
+    if(x<=135000) return 4020+(x-45000)*0.30;
+    if(x<=190000) return 31020+(x-135000)*0.37;
+    return 51370+(x-190000)*0.45;
+  }
+  function lito(x){
+    if(x<=37500) return 700;
+    if(x<=45000) return 700-(x-37500)*0.05;
+    if(x<=66667) return Math.max(0,325-(x-45000)*0.015);
+    return 0;
+  }
+  function medicare(x){ // single-person low-income thresholds (2025–26 figures)
+    const lo=28011, hi=35013;
+    if(x<=lo) return 0; if(x<=hi) return (x-lo)*0.10; return x*0.02;
+  }
+  function annualise(p, per, h){ return per==="year"?p : per==="month"?p*12 : per==="fortnight"?p*26 : per==="week"?p*52 : p*h*52; }
+  function takeHome(s){
+    const gross=annualise(+s.pay||0, s.per, +s.hours||38);
+    if(s.mode==="net") return {net:gross};
+    const base = s.superIncl ? gross/(1+SG) : gross;
+    const tax=Math.max(0,incomeTax(base)-lito(base)), med=medicare(base);
+    return {gross, base, superAmt: s.superIncl? gross-base : 0, tax, med, net: base-tax-med};
+  }
+  let state = JSON.parse(JSON.stringify(DEFAULT));
+  let docRef = null, saving = Promise.resolve();
+  const LS = "worth-hours-v1";
+  const $ = id => document.getElementById(id);
+  const money = n => "$" + (Math.round(n*100)/100).toLocaleString("en-AU",{minimumFractionDigits: n%1?2:0, maximumFractionDigits:2});
+
+  function hourly(s){
+    s = s || state.settings; const h = +s.hours||38;
+    return takeHome(s).net/52/h;
+  }
+  function workTime(price, s){
+    const r = hourly(s); if(!r||!price) return {h:0,m:0,total:0,days:0};
+    const total = price/r, h = Math.floor(total), m = Math.round((total-h)*60);
+    const perDay = ((s||state.settings).hours||38)/5;
+    return {h: m===60?h+1:h, m: m===60?0:m, total, days: total/perDay};
+  }
+  function fmtHM(t){ return t.h ? `${t.h}h ${t.m}m` : `${t.m}m`; }
+  function weekStart(ts){ const d=new Date(ts); const day=(d.getDay()+6)%7; d.setHours(0,0,0,0); d.setDate(d.getDate()-day); return d; }
+  const wkKey = ts => { const d=weekStart(ts); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+  function fmtLeft(ms){
+    if(ms<=0) return "Time's up";
+    const s=Math.floor(ms/1000), d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60), sec=s%60;
+    if(d) return `${d}d ${h}h ${m}m left`; if(h) return `${h}h ${m}m left`; return `${m}m ${String(sec).padStart(2,"0")}s left`;
+  }
+  function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
+
+  // ---------- persistence ----------
+  function persist(){
+    try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ if(window.Android&&Android.sync) Android.sync(JSON.stringify(state)); }catch(e){}
+    if(docRef){ const body=JSON.parse(JSON.stringify(state)); saving = saving.then(()=>docRef.set(body)).catch(e=>{ if(e&&e.code==="quota_exceeded") toast("Storage is full. Clear some history."); }); }
+  }
+  try{ const raw=localStorage.getItem(LS); if(raw){ const s=JSON.parse(raw); if(s&&s.settings) state=Object.assign({},DEFAULT,s); } }catch(e){}
+  function loadNative(){ // phone app: the widgets can change data, so the phone's copy wins
+    try{ if(window.Android&&Android.load){ const raw=Android.load(); if(raw){ const s=JSON.parse(raw); if(s&&s.settings){ state=Object.assign({},DEFAULT,s); return true; } } else if(!state.settings.isExample) Android.sync(JSON.stringify(state)); } }catch(e){}
+    return false;
+  }
+  loadNative();
+  window.__reloadFromNative=()=>{ if(loadNative()){ fillPay(); renderAll(); } };
+
+  (async()=>{
+    try{
+      if(!window.claude||!claude.use) return;
+      const [db,user] = await Promise.all([claude.use("db"), claude.use("user")]);
+      if(!db||!user) return;
+      const id = await user.id(); if(!id) return;
+      docRef = db.doc("data/users/"+id+"/state");
+      docRef.onSnapshot(snap=>{
+        if(snap.exists){ const d=JSON.parse(JSON.stringify(snap.data())); state=Object.assign({},DEFAULT,d); try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){} fillPay(); renderAll(); }
+        else if(!snap.metadata.fromCache && !state.settings.isExample){ persist(); } // carry local data up on first run
+      }, ()=>{});
+    }catch(e){}
+  })();
+
+  // ---------- pay ----------
+  function normalise(){ if(!state.settings.mode) state.settings.mode = state.settings.isExample ? "gross" : "net"; }
+  let draftMode = "gross";
+  function setMode(m){
+    draftMode=m; $("modeGross").setAttribute("aria-checked", m==="gross"); $("modeNet").setAttribute("aria-checked", m==="net");
+    $("payLabel").textContent = m==="gross" ? "Salary before tax" : "Take-home pay";
+    $("superWrap").hidden = m!=="gross";
+    $("payHint").textContent = m==="gross"
+      ? "Worked out for a Victorian resident with 2026–27 tax rates, the 2% Medicare levy and the low income tax offset. It doesn't include HECS/HELP repayments or salary sacrifice. If you have those, switch to take-home and use the figure on your payslip."
+      : "Use the amount that lands in your bank account, straight off your payslip.";
+  }
+  function fillPay(){
+    normalise();
+    $("payAmt").value = state.settings.pay; $("payPer").value = state.settings.per; $("hrs").value = state.settings.hours;
+    $("superIncl").checked = !!state.settings.superIncl; setMode(state.settings.mode);
+    $("exampleNote").hidden = !state.settings.isExample;
+    $("paySection").hidden = !state.settings.isExample && !fillPay.editing;
+    renderBreakdown(draftSettings());
+  }
+  function draftSettings(){ return {pay:+$("payAmt").value||0, per:$("payPer").value, hours:+$("hrs").value||38, mode:draftMode, superIncl:$("superIncl").checked}; }
+  function renderBreakdown(s){
+    const b=$("breakdown"), r=takeHome(s);
+    if(s.mode!=="gross"||!s.pay){ b.hidden=true; return; } b.hidden=false;
+    const rows=[];
+    if(r.superAmt) rows.push(["Package","neg",r.gross],["Super (12%)","neg",-r.superAmt]);
+    rows.push(["Salary before tax","",r.base],["Income tax","neg",-r.tax],["Medicare levy","neg",-r.med]);
+    b.innerHTML = rows.map(([l,c,v])=>`<span class="${c}">${l}</span><span class="${c}">${v<0?"−":""}${money(Math.abs(Math.round(v)))}</span>`).join("")
+      + `<span class="tot">Take-home a year</span><span class="tot">${money(Math.round(r.net))}</span>`
+      + `<span class="neg">per fortnight</span><span class="neg">${money(Math.round(r.net/26))}</span>`;
+  }
+  function onPayInput(){ const d=draftSettings(); renderStamp(d); renderChip(d); renderBreakdown(d); }
+  ["payAmt","payPer","hrs","superIncl"].forEach(id=>$(id).addEventListener("input",onPayInput));
+  $("modeGross").onclick=()=>{setMode("gross"); onPayInput();};
+  $("modeNet").onclick=()=>{setMode("net"); onPayInput();};
+  $("savePay").onclick=()=>{
+    const s=draftSettings(); if(!s.pay){ toast("Enter your pay first"); $("payAmt").focus(); return; }
+    state.settings={...s,isExample:false}; fillPay.editing=false; persist(); fillPay(); renderAll(); toast(`Saved: your time is ${money(hourly())}/hr`);
+  };
+  $("rateChip").onclick=()=>{ fillPay.editing=true; $("paySection").hidden=false; $("payAmt").focus(); };
+  function renderChip(s){ $("rateChipVal").textContent = money(hourly(s)) + "/hr"; }
+
+  // ---------- check ----------
+  let pauseMin = 1440;
+  $("timerChoices").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; pauseMin=+b.dataset.min; [...$("timerChoices").children].forEach(x=>x.setAttribute("aria-pressed", x===b)); });
+  function renderStamp(s){
+    const price=+$("itemPrice").value||0, t=workTime(price, s);
+    $("stampBig").innerHTML = t.h ? `${t.h}<small>hrs</small>${t.m}<small>min</small>` : `${t.m}<small>min</small>`;
+    const days = t.days>=1 ? `That's <strong>${t.days.toFixed(1)} work days</strong>.` : price ? `That's <strong>${Math.round(t.days*100)}%</strong> of a work day.` : "";
+    $("stampSub").innerHTML = price ? `of your work at ${money(hourly(s))}/hr. ${days}` : "Type a price to see it in hours.";
+  }
+  ["itemPrice","itemName"].forEach(id=>$(id).addEventListener("input",()=>renderStamp(fillPay.editing||state.settings.isExample?draftSettings():null)));
+  $("startTimer").onclick=()=>{
+    const price=+$("itemPrice").value||0, name=$("itemName").value.trim()||"Something";
+    if(!price){ toast("Add a price first"); $("itemPrice").focus(); return; }
+    const now=Date.now();
+    state.items.unshift({id:now.toString(36)+Math.random().toString(36).slice(2,6), name, price, rate:hourly(), created:now, ends:now+pauseMin*60000, status:"waiting"});
+    persist(); $("itemName").value=""; $("itemPrice").value=""; renderAll(); toast("Paused. Come back when the timer's done.");
+  };
+
+  // ---------- cooling list ----------
+  let stashOpen=null, stashWeeks=4;
+  const WEEK_CHOICES=[1,2,4,8,12];
+  function addWeeks(key,n){ const d=new Date(key+"T00:00"); d.setDate(d.getDate()+7*n); return wkKey(d); }
+  const shortDate = key => new Date(key+"T00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+  function perLine(price,n){
+    const endKey=addWeeks(wkKey(Date.now()),n-1);
+    return `<span class="per-amt">${money(price/n)}</span><span class="per-txt">a week for ${n} week${n>1?"s":""}${n>1?` · done the week of ${shortDate(endKey)}`:""}</span>`;
+  }
+  function stashPicker(i){
+    return `<div class="stash-pick">
+      <div class="ask">How long to put away ${money(i.price)}?</div>
+      <div class="timers">${WEEK_CHOICES.map(n=>`<button type="button" data-weeks="${n}" aria-pressed="${n===stashWeeks}">${n} wk${n>1?"s":""}</button>`).join("")}</div>
+      <label class="inline" for="stashCustom">Or type weeks <input id="stashCustom" type="number" inputmode="numeric" min="1" max="104" value="${WEEK_CHOICES.includes(stashWeeks)?"":stashWeeks}" placeholder="e.g. 6"></label>
+      <div class="per" data-per>${perLine(i.price,stashWeeks)}</div>
+      <div class="actions">
+        <button class="btn good" data-act="stash-confirm" type="button">Start saving</button>
+        <button class="btn ghost" data-act="stash-cancel" type="button">Back</button>
+      </div></div>`;
+  }
+  function renderCool(){
+    const list=$("coolList"), now=Date.now(), waiting=state.items.filter(i=>i.status==="waiting");
+    if(!waiting.length){ list.innerHTML=`<div class="empty">Nothing on pause. When something catches your eye, add it above and start a timer. It waits here until you decide.</div>`; return; }
+    list.innerHTML = waiting.map(i=>{
+      const left=i.ends-now, ready=left<=0, pct=Math.min(100,Math.max(0,(now-i.created)/(i.ends-i.created)*100));
+      const t=workTime(i.price,{pay:i.rate,per:"hour",hours:state.settings.hours,mode:"net"});
+      const open = stashOpen===i.id;
+      return `<div class="item${ready?" ready":""}" data-id="${i.id}">
+        <div class="item-top"><span class="item-name"></span><span class="item-price">${money(i.price)}</span></div>
+        <div class="item-meta"><span>${fmtHM(t)} of work</span><span class="pill${ready?" ready":""}" data-left>${fmtLeft(left)}</span></div>
+        ${open?stashPicker(i):`${ready?`<div class="ask">Still want it?</div>`:`<div class="bar"><i style="width:${pct}%"></i></div>`}
+        <div class="actions">
+          <button class="btn good" data-act="stash" type="button">Stash it</button>
+          <button class="btn ghost" data-act="toss" type="button">Toss the idea</button>
+          <button class="btn ghost" data-act="buy" type="button">${ready?"Buy it":"Buy anyway"}</button>
+        </div>`}</div>`;
+    }).join("");
+    waiting.forEach(i=>{ list.querySelector(`[data-id="${i.id}"] .item-name`).textContent=i.name; });
+  }
+  $("coolList").addEventListener("click",e=>{
+    const card=e.target.closest(".item"); if(!card) return;
+    const it=state.items.find(x=>x.id===card.dataset.id); if(!it) return;
+    const wb=e.target.closest("button[data-weeks]");
+    if(wb){ stashWeeks=+wb.dataset.weeks; renderCool(); return; }
+    const b=e.target.closest("button[data-act]"); if(!b) return;
+    const act=b.dataset.act;
+    if(act==="stash"){ stashOpen=it.id; stashWeeks=4; renderCool(); return; }
+    if(act==="stash-cancel"){ stashOpen=null; renderCool(); return; }
+    if(act==="stash-confirm"){
+      const n=Math.max(1,Math.min(104,Math.round(stashWeeks)||1));
+      it.status="stash"; it.decided=Date.now(); it.weeks=n; it.startWk=wkKey(it.decided); stashOpen=null;
+      persist(); renderAll(); toast(n>1?`${money(it.price/n)} a week for ${n} weeks`:`${money(it.price)} into the jar this week`); return;
+    }
+    it.status=act; it.decided=Date.now(); stashOpen=null; persist(); renderAll();
+    toast(act==="toss"?"Let it go. Nice.":"Enjoy it. You thought it through.");
+  });
+  $("coolList").addEventListener("input",e=>{
+    if(e.target.id!=="stashCustom") return;
+    const v=Math.round(+e.target.value); if(!(v>=1&&v<=104)) return;
+    stashWeeks=v; const card=e.target.closest(".item"), it=state.items.find(x=>x.id===card.dataset.id);
+    card.querySelectorAll("button[data-weeks]").forEach(x=>x.setAttribute("aria-pressed", +x.dataset.weeks===v));
+    card.querySelector("[data-per]").innerHTML=perLine(it.price,v);
+  });
+
+  // ---------- jar ----------
+  function schedule(){
+    const byWk={}, plans=[];
+    state.items.filter(i=>i.status==="stash").forEach(i=>{
+      const n=i.weeks||1, start=i.startWk||wkKey(i.decided), per=i.per||i.price/n;
+      for(let j=0;j<n;j++){ const k=addWeeks(start,j); byWk[k]=(byWk[k]||0)+per; }
+      plans.push({i,n,start,per,end:addWeeks(start,n-1)});
+    });
+    return {byWk,plans};
+  }
+  function renderJar(){
+    const now=Date.now(), thisWk=wkKey(now), {byWk,plans}=schedule();
+    const stashed=state.items.filter(i=>i.status==="stash"), tossed=state.items.filter(i=>i.status==="toss"&&!i.fromJar);
+    let soFar=0, toCome=0; Object.entries(byWk).forEach(([k,v])=>{ if(k<=thisWk) soFar+=v; else toCome+=v; });
+    const hrs=[...stashed,...tossed].reduce((a,i)=>a+i.price/(i.rate||1),0);
+    const wk=byWk[thisWk]||0;
+    const due=plans.filter(p=>!p.i.stopped && p.start<=thisWk && p.end>=thisWk);
+    const unpaid=due.filter(p=>!paidThisWeek(p.i,thisWk)).reduce((a,p)=>a+p.per,0), moved=wk>0 && unpaid<0.005;
+    $("jarWeek").textContent=money(Math.round(wk*100)/100); $("jarAll").textContent=money(Math.round(soFar*100)/100); $("jarHrs").textContent=(hrs<10?hrs.toFixed(1):Math.round(hrs))+"h";
+    $("movedBox").innerHTML = wk ? (moved ? `<span>✓ This week's ${money(Math.round(wk*100)/100)} is in savings.</span><button class="linkish" data-undo type="button">Undo</button>`
+      : `<span>Move <strong>${money(Math.round(unpaid*100)/100)}</strong> to savings this week${unpaid<wk-0.005?` (${money(r2(wk-unpaid))} already done)`:""}.</span><button class="btn good" data-move type="button" style="padding:7px 12px">Done, I moved it</button>`)
+      : `<span>Stash a skipped buy and its weekly amount lands here, ready to move to savings.</span>`;
+    const weeks=[]; for(let w=2; w>=-3; w--) weeks.push(addWeeks(thisWk,w));
+    const max=Math.max(1,...weeks.map(k=>byWk[k]||0));
+    $("weeks").innerHTML = weeks.map(k=>{ const v=byWk[k]||0, diff=Math.round((new Date(k+"T00:00")-new Date(thisWk+"T00:00"))/6048e5);
+      const lbl = diff===0?"This week":diff===1?"Next week":diff===-1?"Last week":shortDate(k);
+      return `<div class="week${diff>0?" future":""}${diff===0?" now":""}"><span>${lbl}${(k===thisWk?moved:state.moved[k])&&v?" ✓":""}</span><span class="track"><i style="width:${v/max*100}%"></i></span><span class="amt">${money(Math.round(v*100)/100)}</span></div>`; }).join("");
+    renderJarCards(plans, thisWk);
+    const tossAmt=tossed.reduce((a,i)=>a+i.price,0);
+    $("tossNote").textContent = [toCome?`${money(Math.round(toCome*100)/100)} still to put away in the coming weeks.`:"", tossed.length ? `Plus ${money(tossAmt)} you let go of across ${tossed.length} idea${tossed.length>1?"s":""}, money that never left your account.` : ""].filter(Boolean).join(" ");
+    const done=state.items.filter(i=>i.status!=="waiting").sort((a,b)=>b.decided-a.decided).slice(0,40);
+    const hist=$("history");
+    hist.innerHTML = done.length ? done.map(i=>`<div class="h"><span><span class="tag ${i.status}">${i.stopped?"Stopped":i.status==="stash"?"Stashed":i.fromJar?"Tossed from jar":i.status==="toss"?"Tossed":"Bought"}</span> · <span data-n></span>${i.status==="stash"&&(i.planWeeks||i.weeks)>1?` · ${i.stopped?`${i.weeks} of ${i.planWeeks}`:i.weeks} wks`:""}</span><span class="num">${money(i.price)}</span></div>`).join("") : `<p class="hint">Your decisions will show up here.</p>`;
+    hist.querySelectorAll("[data-n]").forEach((el,ix)=>el.textContent=done[ix].name);
+  }
+  let jarOpen=null, jarConfirm=null;
+  function paidThisWeek(i, thisWk){ return !!state.moved[thisWk] || (i.paidWks||[]).includes(thisWk); }
+  function paidWeeks(p, thisWk){ // weeks already behind you (this week counts once it's put away)
+    let k=p.start, n=0; while(n<p.n && (k<thisWk || (k===thisWk && paidThisWeek(p.i||{},thisWk)))){ n++; k=addWeeks(k,1); } return n;
+  }
+  function renderJarCards(plans, thisWk){
+    const el=$("plans");
+    const list=plans.slice().sort((a,b)=>{ const da=a.end<thisWk, db=b.end<thisWk; if(da!==db) return da?1:-1; return a.end<b.end?-1:a.end>b.end?1:0; });
+    if(!list.length){ el.innerHTML=""; return; }
+    el.innerHTML = `<div class="eyebrow">In the jar · ${list.length}</div>` + list.map(p=>{
+      const i=p.i, done=p.end<thisWk || (p.end===thisWk && paidThisWeek(i,thisWk));
+      const wkNo=Math.min(p.n,Math.max(1,Math.round((new Date(thisWk+"T00:00")-new Date(p.start+"T00:00"))/6048e5)+1));
+      const paid=paidWeeks(p,thisWk), saved=p.per*paid, left=p.per*p.n-saved, open=jarOpen===i.id, confirm=jarConfirm===i.id;
+      const status = (i.stopped ? `Stopped · ${money(r2(saved))} saved` : done ? "Fully saved ✓" : p.n>1 ? `Week ${wkNo} of ${p.n}` : "This week") + (!i.stopped&&!done&&paidThisWeek(i,thisWk)?" · ✓ put away":"");
+      const pct = i.stopped||done ? 100 : paid/p.n*100;
+      const hrs = workTime(i.price,{pay:i.rate,per:"hour",hours:state.settings.hours,mode:"net"});
+      return `<div class="jcard${open?" open":""}${done||i.stopped?" done":""}" data-id="${i.id}">
+        <button class="jhead" type="button" data-toggle aria-expanded="${open}">
+          <span class="jname" data-n></span>
+          <span class="jper">${i.stopped||done?money(r2(i.stopped?saved:i.price)):money(r2(p.per))+"<small>/wk</small>"}</span>
+          <span class="jstatus">${status}</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        ${open?`<div class="jbody">
+          <dl class="jfacts">
+            <dt>Total</dt><dd>${money(i.price)}</dd>
+            <dt>Weekly</dt><dd>${money(r2(p.per))} × ${p.n} wk${p.n>1?"s":""}</dd>
+            <dt>Put away so far</dt><dd>${money(r2(saved))}</dd>
+            ${!done&&!i.stopped?`<dt>Still to go</dt><dd>${money(r2(left))}</dd>`:""}
+            <dt>${done||i.stopped?"Finished":"Done by"}</dt><dd>week of ${shortDate(p.end)}</dd>
+            <dt>Work it would've cost</dt><dd>${fmtHM(hrs)}</dd>
+          </dl>
+          ${done||i.stopped?"":confirm?`<div class="jconfirm"><p>Toss <strong data-n2></strong> from the jar? ${saved?`The ${money(r2(saved))} you've already put away stays counted, and`:"It's"} ${saved?"the":""} weekly ${money(r2(p.per))} stops.</p>
+            <div class="actions"><button class="btn danger" type="button" data-jact="toss-yes">Yes, toss it</button><button class="btn ghost" type="button" data-jact="toss-no">Keep saving</button></div></div>`
+            :`<div class="actions"><button class="btn ghost" type="button" data-jact="toss">Toss from jar</button></div>`}
+        </div>`:""}
+      </div>`; }).join("");
+    el.querySelectorAll(".jcard").forEach((c,ix)=>{ const nm=list[ix].i.name; c.querySelector("[data-n]").textContent=nm; const n2=c.querySelector("[data-n2]"); if(n2) n2.textContent=nm; });
+  }
+  const r2 = v => Math.round(v*100)/100;
+  $("plans").addEventListener("click",e=>{
+    const card=e.target.closest(".jcard"); if(!card) return;
+    const id=card.dataset.id, it=state.items.find(x=>x.id===id); if(!it) return;
+    if(e.target.closest("[data-toggle]")){ jarOpen = jarOpen===id?null:id; jarConfirm=null; renderJar(); return; }
+    const act=e.target.closest("[data-jact]")?.dataset.jact; if(!act) return;
+    if(act==="toss"){ jarConfirm=id; renderJar(); return; }
+    if(act==="toss-no"){ jarConfirm=null; renderJar(); return; }
+    if(act==="toss-yes"){
+      const thisWk=wkKey(Date.now()), n=it.weeks||1, p={i:it, start:it.startWk||wkKey(it.decided), n, per:it.per||it.price/n};
+      const paid=paidWeeks(p,thisWk);
+      if(paid===0){ it.status="toss"; it.fromJar=true; }
+      else { it.per=p.per; it.planWeeks=n; it.weeks=paid; it.stopped=true; }
+      it.decided=Date.now(); jarOpen=null; jarConfirm=null; persist(); renderJar();
+      toast(paid?`Stopped. ${money(r2(p.per*paid))} stays saved.`:"Tossed from the jar.");
+    }
+  });
+  $("movedBox").addEventListener("click",e=>{
+    const k=wkKey(Date.now());
+    if(e.target.closest("[data-move]")){ state.moved[k]=true; persist(); renderJar(); toast("Logged. Future you says thanks."); }
+    if(e.target.closest("[data-undo]")){ delete state.moved[k]; state.items.forEach(i=>{ if(i.paidWks) i.paidWks=i.paidWks.filter(x=>x!==k); }); persist(); renderJar(); }
+  });
+
+  function renderAll(){ renderChip(state.settings.isExample||fillPay.editing?draftSettings():null); renderStamp(state.settings.isExample||fillPay.editing?draftSettings():null); renderCool(); renderJar(); }
+
+  // live countdown: updates text only; re-render when an item crosses zero
+  setInterval(()=>{
+    const now=Date.now(); let flip=false;
+    document.querySelectorAll("#coolList .item").forEach(el=>{
+      const it=state.items.find(x=>x.id===el.dataset.id); if(!it) return;
+      const left=it.ends-now; if(left<=0 && !el.classList.contains("ready")) flip=true;
+      const p=el.querySelector("[data-left]"); if(p) p.textContent=fmtLeft(left);
+      const bar=el.querySelector(".bar i"); if(bar) bar.style.width=Math.min(100,(now-it.created)/(it.ends-it.created)*100)+"%";
+    });
+    if(flip) renderCool();
+  },1000);
+
+  fillPay(); renderAll();
+})();
+</script>
+</body></html>

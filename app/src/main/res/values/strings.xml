@@ -1,0 +1,4 @@
+<resources>
+    <string name="cool_desc">A ring that fills as your cooling-off timer counts down</string>
+    <string name="jar_desc">Track one jar item and tap to put this week\'s money away</string>
+</resources>
