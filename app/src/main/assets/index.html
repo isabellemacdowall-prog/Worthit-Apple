@@ -141,6 +141,19 @@ label.inline input{width:5.5rem;padding:8px 10px}
 .jconfirm{display:flex;flex-direction:column;gap:10px;background:rgba(197,151,157,.12);border:1px solid rgba(197,151,157,.35);border-radius:12px;padding:12px}
 .jconfirm p{margin:0;font-size:.88rem}
 .btn.danger{background:var(--rose);color:var(--accent-ink)}
+.linkrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.linkrow .btn{padding:12px 14px;white-space:nowrap}
+.opt{font-weight:500;opacity:.7}
+.preview{display:flex;gap:12px;align-items:center;background:var(--sunk);border-radius:14px;padding:10px}
+.preview img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--grape);flex:none}
+.preview-text{display:flex;flex-direction:column;gap:4px;min-width:0}
+.preview-site{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.thumb{width:52px;height:52px;border-radius:12px;object-fit:cover;background:var(--grape);flex:none}
+.item-head{display:flex;gap:12px;align-items:center}
+.item-head-text{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.jhead.has-img{grid-template-columns:44px 1fr auto 18px;grid-template-areas:"img name per chev" "img status status chev"}
+.jhead .jimg{grid-area:img;width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--grape)}
+.jlink{color:var(--rose);font-weight:600;font-size:.86rem;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -187,6 +200,17 @@ label.inline input{width:5.5rem;padding:8px 10px}
   <section class="section">
     <h2>Tempted by something?</h2>
     <div class="panel">
+      <div class="linkrow">
+        <label for="itemLink">Paste a link <span class="opt">(optional)</span>
+          <input id="itemLink" type="url" inputmode="url" placeholder="https://shop.com/the-thing" autocomplete="off">
+        </label>
+        <button class="btn ghost" id="fetchLink" type="button">Get details</button>
+      </div>
+      <p class="hint" id="linkStatus" hidden></p>
+      <div class="preview" id="preview" hidden>
+        <img id="previewImg" alt="">
+        <div class="preview-text"><span class="preview-site" id="previewSite"></span><button class="linkish" id="clearLink" type="button">Remove</button></div>
+      </div>
       <div class="row">
         <label for="itemName">What is it?
           <input id="itemName" type="text" placeholder="e.g. new boots" maxlength="60" autocomplete="off">
@@ -382,9 +406,74 @@ label.inline input{width:5.5rem;padding:8px 10px}
     const price=+$("itemPrice").value||0, name=$("itemName").value.trim()||"Something";
     if(!price){ toast("Add a price first"); $("itemPrice").focus(); return; }
     const now=Date.now();
-    state.items.unshift({id:now.toString(36)+Math.random().toString(36).slice(2,6), name, price, rate:hourly(), created:now, ends:now+pauseMin*60000, status:"waiting"});
-    persist(); $("itemName").value=""; $("itemPrice").value=""; renderAll(); toast("Paused. Come back when the timer's done.");
+    const it={id:now.toString(36)+Math.random().toString(36).slice(2,6), name, price, rate:hourly(), created:now, ends:now+pauseMin*60000, status:"waiting"};
+    const link=cleanUrl($("itemLink").value); if(link) it.url=link; if(linkMeta.image) it.img=linkMeta.image;
+    state.items.unshift(it);
+    persist(); $("itemName").value=""; $("itemPrice").value=""; clearLink(); renderAll(); toast("Paused. Come back when the timer's done.");
   };
+
+  // ---------- paste a link ----------
+  let linkMeta={}, linkReq=0;
+  function cleanUrl(v){
+    v=(v||"").trim(); const m=v.match(/https?:\/\/[^\s<>"']+/i); if(m) v=m[0]; else if(/^[\w-]+(\.[\w-]+)+\//.test(v)) v="https://"+v; else return "";
+    try{ const u=new URL(v); return /^https?:$/.test(u.protocol)?u.href:""; }catch(e){ return ""; }
+  }
+  const safeImg = v => { try{ const u=new URL(v); return /^https?:$/.test(u.protocol)?u.href:""; }catch(e){ return ""; } };
+  function linkStatus(msg){ const el=$("linkStatus"); el.textContent=msg||""; el.hidden=!msg; }
+  function clearLink(){ linkMeta={}; $("itemLink").value=""; $("preview").hidden=true; linkStatus(""); }
+  function nativeMeta(url){
+    return new Promise((res,rej)=>{
+      const id="m"+(++linkReq); const t=setTimeout(()=>{ delete window.__metaCb[id]; rej(new Error("timeout")); },15000);
+      window.__metaCb=window.__metaCb||{}; window.__metaCb[id]=d=>{ clearTimeout(t); delete window.__metaCb[id]; d&&!d.error?res(d):rej(new Error("failed")); };
+      Android.fetchMeta(id,url);
+    });
+  }
+  window.__meta=(id,d)=>{ const cb=window.__metaCb&&window.__metaCb[id]; if(cb) cb(d); };
+  async function webMeta(url){
+    const r=await fetch("https://api.microlink.io/?url="+encodeURIComponent(url));
+    const j=await r.json(); if(j.status!=="success") throw new Error("failed");
+    const d=j.data||{}; return {title:d.title||"", image:(d.image&&d.image.url)||(d.logo&&d.logo.url)||"", site:d.publisher||""};
+  }
+  function tidyTitle(t, site){
+    t=(t||"").replace(/\s+/g," ").trim();
+    t=t.replace(/\s*[|\-–—:]\s*(Buy|Shop|Online|Free Shipping).*$/i,"");
+    if(site) t=t.replace(new RegExp("\\s*[|\\-–—:]\\s*"+site.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\s*$","i"),"");
+    return t.slice(0,60);
+  }
+  async function getDetails(){
+    const url=cleanUrl($("itemLink").value);
+    if(!url){ linkStatus("That doesn't look like a web link. Copy the address from the shop page and paste it here."); return; }
+    $("itemLink").value=url; linkStatus("Getting the details…"); $("fetchLink").disabled=true;
+    try{
+      const d = (window.Android&&Android.fetchMeta) ? await nativeMeta(url) : await webMeta(url);
+      const host=new URL(url).hostname.replace(/^www\./,"");
+      linkMeta={image:safeImg(d.image||""), site:d.site||host};
+      const title=tidyTitle(d.title, d.site);
+      if(title && !$("itemName").value.trim()) $("itemName").value=title;
+      let priceNote="";
+      if(d.price && !(+$("itemPrice").value)){
+        const cur=(d.currency||"").toUpperCase();
+        if(!cur||cur==="AUD"){ $("itemPrice").value=(+d.price).toFixed(2).replace(/\.00$/,""); }
+        else priceNote=` The shop lists ${cur} ${d.price}, so type the price in AUD.`;
+      }
+      if(linkMeta.image){ const im=$("previewImg"); im.onerror=()=>{ $("preview").hidden=true; linkMeta.image=""; }; im.src=linkMeta.image; }
+      $("previewSite").textContent=linkMeta.site;
+      $("preview").hidden=!linkMeta.image;
+      const got=[title&&"name", linkMeta.image&&"picture", (d.price&&+$("itemPrice").value)&&"price"].filter(Boolean);
+      linkStatus(got.length ? `Got the ${got.join(", ").replace(/, ([^,]*)$/," and $1")}.${!(+$("itemPrice").value)?" Add the price yourself.":""}${priceNote}` : "That shop didn't share any details. Fill them in below.");
+      renderStamp(fillPay.editing||state.settings.isExample?draftSettings():null);
+    }catch(e){
+      linkStatus("Couldn't read that page. Some shops block it. Fill in the name and price below; the link is still saved.");
+    }finally{ $("fetchLink").disabled=false; }
+  }
+  $("fetchLink").onclick=getDetails;
+  $("clearLink").onclick=clearLink;
+  $("itemLink").addEventListener("paste",()=>setTimeout(()=>{ if(cleanUrl($("itemLink").value)) getDetails(); },0));
+  $("itemLink").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); getDetails(); } });
+  window.__sharedLink=v=>{ $("itemLink").value=v; $("itemLink").scrollIntoView({behavior:"smooth",block:"center"}); getDetails(); };
+  function setImgs(root, items){ // set image src safely after rendering
+    root.querySelectorAll("img[data-img]").forEach(im=>{ const it=items.find(x=>x.id===im.dataset.img); const u=it&&safeImg(it.img||""); if(u){ im.onerror=()=>im.remove(); im.src=u; } else im.remove(); });
+  }
 
   // ---------- cooling list ----------
   let stashOpen=null, stashWeeks=4;
@@ -414,8 +503,9 @@ label.inline input{width:5.5rem;padding:8px 10px}
       const t=workTime(i.price,{pay:i.rate,per:"hour",hours:state.settings.hours,mode:"net"});
       const open = stashOpen===i.id;
       return `<div class="item${ready?" ready":""}" data-id="${i.id}">
+        <div class="item-head">${i.img?`<img class="thumb" data-img="${i.id}" alt="">`:""}<div class="item-head-text">
         <div class="item-top"><span class="item-name"></span><span class="item-price">${money(i.price)}</span></div>
-        <div class="item-meta"><span>${fmtHM(t)} of work</span><span class="pill${ready?" ready":""}" data-left>${fmtLeft(left)}</span></div>
+        <div class="item-meta"><span>${fmtHM(t)} of work</span><span class="pill${ready?" ready":""}" data-left>${fmtLeft(left)}</span></div></div></div>
         ${open?stashPicker(i):`${ready?`<div class="ask">Still want it?</div>`:`<div class="bar"><i style="width:${pct}%"></i></div>`}
         <div class="actions">
           <button class="btn good" data-act="stash" type="button">Stash it</button>
@@ -424,6 +514,7 @@ label.inline input{width:5.5rem;padding:8px 10px}
         </div>`}</div>`;
     }).join("");
     waiting.forEach(i=>{ list.querySelector(`[data-id="${i.id}"] .item-name`).textContent=i.name; });
+    setImgs(list, waiting);
   }
   $("coolList").addEventListener("click",e=>{
     const card=e.target.closest(".item"); if(!card) return;
@@ -502,7 +593,8 @@ label.inline input{width:5.5rem;padding:8px 10px}
       const pct = i.stopped||done ? 100 : paid/p.n*100;
       const hrs = workTime(i.price,{pay:i.rate,per:"hour",hours:state.settings.hours,mode:"net"});
       return `<div class="jcard${open?" open":""}${done||i.stopped?" done":""}" data-id="${i.id}">
-        <button class="jhead" type="button" data-toggle aria-expanded="${open}">
+        <button class="jhead${i.img?" has-img":""}" type="button" data-toggle aria-expanded="${open}">
+          ${i.img?`<img class="jimg" data-img="${i.id}" alt="">`:""}
           <span class="jname" data-n></span>
           <span class="jper">${i.stopped||done?money(r2(i.stopped?saved:i.price)):money(r2(p.per))+"<small>/wk</small>"}</span>
           <span class="jstatus">${status}</span>
@@ -518,12 +610,15 @@ label.inline input{width:5.5rem;padding:8px 10px}
             <dt>${done||i.stopped?"Finished":"Done by"}</dt><dd>week of ${shortDate(p.end)}</dd>
             <dt>Work it would've cost</dt><dd>${fmtHM(hrs)}</dd>
           </dl>
+          ${i.url?`<a class="jlink" data-url="${i.id}" target="_blank" rel="noopener">View it in the shop ↗</a>`:""}
           ${done||i.stopped?"":confirm?`<div class="jconfirm"><p>Toss <strong data-n2></strong> from the jar? ${saved?`The ${money(r2(saved))} you've already put away stays counted, and`:"It's"} ${saved?"the":""} weekly ${money(r2(p.per))} stops.</p>
             <div class="actions"><button class="btn danger" type="button" data-jact="toss-yes">Yes, toss it</button><button class="btn ghost" type="button" data-jact="toss-no">Keep saving</button></div></div>`
             :`<div class="actions"><button class="btn ghost" type="button" data-jact="toss">Toss from jar</button></div>`}
         </div>`:""}
       </div>`; }).join("");
     el.querySelectorAll(".jcard").forEach((c,ix)=>{ const nm=list[ix].i.name; c.querySelector("[data-n]").textContent=nm; const n2=c.querySelector("[data-n2]"); if(n2) n2.textContent=nm; });
+    setImgs(el, list.map(p=>p.i));
+    el.querySelectorAll("a[data-url]").forEach(a=>{ const it=list.find(p=>p.i.id===a.dataset.url); const u=it&&cleanUrl(it.i.url); if(u) a.href=u; else a.remove(); });
   }
   const r2 = v => Math.round(v*100)/100;
   $("plans").addEventListener("click",e=>{
