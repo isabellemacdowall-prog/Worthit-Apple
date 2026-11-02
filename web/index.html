@@ -455,12 +455,29 @@ label.inline input{width:5.5rem;padding:8px 10px}
     if(site) t=t.replace(new RegExp("\\s*[|\\-–—:]\\s*"+site.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\s*$","i"),"");
     return t.slice(0,60);
   }
+  function nameFromUrl(url){ // e.g. kmart.com.au/product/ribbed-knit-jumper-43273874/ → "Ribbed knit jumper"
+    try{
+      const parts=new URL(url).pathname.split("/").map(decodeURIComponent).filter(Boolean);
+      const skip=/^(p|dp|product|products|item|items|buy|shop|en|en-au|au|ip|gp|s|c|pd|prod)$/i;
+      let best="";
+      for(const seg of parts){
+        if(skip.test(seg)) continue;
+        const words=seg.replace(/\.(html?|aspx?|php)$/i,"").replace(/[-_+]+/g," ").replace(/\b(?=[A-Z0-9]*\d)[A-Z0-9]{5,}\b/gi,"").replace(/\s+/g," ").trim();
+        if(words.split(" ").length>=2 && words.length>best.length) best=words;
+      }
+      return best ? (best[0].toUpperCase()+best.slice(1).toLowerCase()).slice(0,60) : "";
+    }catch(e){ return ""; }
+  }
   async function getDetails(){
     const url=cleanUrl($("itemLink").value);
     if(!url){ linkStatus("That doesn't look like a web link. Copy the address from the shop page and paste it here."); return; }
     $("itemLink").value=url; linkStatus("Getting the details…"); $("fetchLink").disabled=true;
     try{
-      const d = (window.Android&&Android.fetchMeta) ? await nativeMeta(url) : await webMeta(url);
+      let d=null;
+      if(window.Android&&Android.fetchMeta){ try{ d=await nativeMeta(url); }catch(e){} }
+      if(!d || (!d.title && !d.image)){ try{ const w=await webMeta(url); d=Object.assign({}, w, d&&d.price?{price:d.price,currency:d.currency}:{}); }catch(e){} }
+      if(!d || (!d.title && !d.image)) d={title:nameFromUrl(url), image:"", fromSlug:true};
+      if(!d.title) d.title=nameFromUrl(url);
       const host=new URL(url).hostname.replace(/^www\./,"");
       linkMeta={image:safeImg(d.image||""), site:d.site||host};
       const title=tidyTitle(d.title, d.site);
@@ -475,7 +492,8 @@ label.inline input{width:5.5rem;padding:8px 10px}
       $("previewSite").textContent=linkMeta.site;
       $("preview").hidden=!linkMeta.image;
       const got=[title&&"name", linkMeta.image&&"picture", (d.price&&+$("itemPrice").value)&&"price"].filter(Boolean);
-      linkStatus(got.length ? `Got the ${got.join(", ").replace(/, ([^,]*)$/," and $1")}.${!(+$("itemPrice").value)?" Add the price yourself.":""}${priceNote}` : "That shop didn't share any details. Fill them in below.");
+      linkStatus(d.fromSlug ? (title ? "That shop blocks apps from reading its page, so I took the name from the link. Check it and add the price." : "That shop blocks apps from reading its page. Fill in the name and price below; the link is still saved.")
+        : got.length ? `Got the ${got.join(", ").replace(/, ([^,]*)$/," and $1")}.${!(+$("itemPrice").value)?" Add the price yourself.":""}${priceNote}` : "That shop didn't share any details. Fill them in below.");
       renderStamp(fillPay.editing||state.settings.isExample?draftSettings():null);
     }catch(e){
       linkStatus("Couldn't read that page. Some shops block it. Fill in the name and price below; the link is still saved.");

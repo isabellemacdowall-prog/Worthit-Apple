@@ -28,11 +28,32 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void fetchMeta(String id, String link) {
             new Thread(() -> {
-                JSONObject d = Meta.fetch(link);
-                String js = "window.__meta(" + JSONObject.quote(id) + "," + d.toString() + ")";
-                runOnUiThread(() -> { if (web != null) web.evaluateJavascript(js, null); });
+                JSONObject quick = Meta.fetch(link);
+                boolean enough = !quick.has("error") && !quick.optString("title").isEmpty()
+                        && !quick.optString("image").isEmpty() && quick.has("price");
+                if (enough) { reply(id, quick); return; }
+                // Many shops block simple readers or load details with scripts: read it like a browser instead.
+                PageReader.read(MainActivity.this, link, deep -> {
+                    JSONObject out = new JSONObject();
+                    try {
+                        for (String k : new String[]{"title", "image", "site", "price", "currency"}) {
+                            String q = quick.has("error") ? "" : quick.optString(k, "");
+                            String v = deep.optString(k, "");
+                            String pick = !v.isEmpty() && (q.isEmpty() || k.equals("price") || k.equals("currency")) ? v : q;
+                            if (k.equals("image") && !q.isEmpty()) pick = q;
+                            if (!pick.isEmpty()) out.put(k, pick);
+                        }
+                        if (!out.has("title") && !out.has("image")) out.put("error", "nothing found");
+                    } catch (Exception e) { }
+                    reply(id, out);
+                });
             }).start();
         }
+    }
+
+    private void reply(String id, JSONObject d) {
+        String js = "window.__meta(" + JSONObject.quote(id) + "," + d.toString() + ")";
+        runOnUiThread(() -> { if (web != null) web.evaluateJavascript(js, null); });
     }
 
     @Override
@@ -56,7 +77,7 @@ public class MainActivity extends Activity {
                 deliverLink();
             }
         });
-        setContentView(web);
+        setContentView(web, new android.view.ViewGroup.LayoutParams(-1, -1));
         web.loadUrl("file:///android_asset/index.html");
         handleShare(getIntent());
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
